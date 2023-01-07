@@ -1,9 +1,15 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-
 #include "bsp/board.h"
-
 #include "tusb.h"
+#include "LCD_I2C.hpp"
+#include <memory>
+
+#define ONBOARD_LED 25
+#define I2C_ADDRESS 0x27
+#define LCD_COLUMNS 20
+#define LCD_ROWS 4
+
 
 #define ONBOARD_LED 25
 
@@ -17,6 +23,12 @@ int main()
     tusb_init();
     gpio_init(ONBOARD_LED);
     gpio_set_dir(ONBOARD_LED, GPIO_OUT);
+
+    auto lcd = std::make_unique<LCD_I2C>(I2C_ADDRESS, LCD_COLUMNS, LCD_ROWS, i2c_default, PICO_DEFAULT_I2C_SDA_PIN, PICO_DEFAULT_I2C_SCL_PIN);
+
+    lcd->BacklightOn();
+    lcd->SetCursor(0, 7);
+    lcd->PrintString("NAVCOM");
     
     while (1)
     {
